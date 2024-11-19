@@ -1,46 +1,62 @@
-"use client";
-import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
-import { Center } from "@repo/ui/center";
-import { TextInput } from "@repo/ui/textinput";
-import { useState } from "react";
-import { p2pTransfer } from "../app/lib/p2pTransfer";
+"use client"
 
-export function SendCard() {
-  const [number, setNumber] = useState("");
-  const [amount, setAmount] = useState("");
+import { useState } from "react"
+import { ArrowRight, Phone, CreditCard } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { p2pTransfer } from "@/app/lib/p2pTransfer"
+
+export default function SendCard() {
+  const [number, setNumber] = useState("")
+  const [amount, setAmount] = useState("")
+
+  const handleSend = async () => {
+    await p2pTransfer(number, Number(amount) * 100)
+  }
 
   return (
-    <div className="h-[90vh]">
-      <Center>
-        <Card title="Send">
-          <div className="min-w-72 pt-2">
-            <TextInput
-              placeholder={"Number"}
-              label="Number"
-              onChange={(value) => {
-                setNumber(value);
-              }}
-            />
-            <TextInput
-              placeholder={"Amount"}
-              label="Amount"
-              onChange={(value) => {
-                setAmount(value);
-              }}
-            />
-            <div className="pt-4 flex justify-center">
-              <Button
-                onClick={async () => {
-                  await p2pTransfer(number, Number(amount) * 100);
-                }}
-              >
-                Send
-              </Button>
+    <div className="h-[90vh] flex items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Send Money</CardTitle>
+          <CardDescription>Transfer funds to another account instantly.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="number">Recipient's Phone Number</Label>
+            <div className="relative">
+              <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="number"
+                placeholder="Enter phone number"
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </div>
-        </Card>
-      </Center>
+          <div className="space-y-2">
+            <Label htmlFor="amount">Amount</Label>
+            <div className="relative">
+              <CreditCard className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="amount"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full text-lg" onClick={handleSend}>
+            Send Money <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
-  );
+  )
 }
