@@ -15,23 +15,45 @@ export async function getTransactionHistory() {
   }
 
   try {
-    const transactions = await prisma.p2pTransfer.findMany({
+    const transactions = await prisma.user.findUnique({
       where: {
-        fromUserId: Number(session?.user?.id),
+        id: Number(userId),
       },
       include: {
-        fromUser: { select: { id: true, name: true } },
-        toUser: { select: { id: true, name: true } },
+        sentTransfers: {
+          include: { toUser: { select: { id: true, name: true } } },
+        },
+        receivedTransfers: {
+          include: { fromUser: { select: { id: true, name: true } } },
+        },
       },
-      orderBy: {
-        timestamp: "desc",
-      },
-      take: 10,
     });
 
-    return transactions;
+   
+
+    if (!transactions) {
+      return { error: "No transactions found." };
+    }
+
+    
+    const formattedTransactions = [
+      ...transactions.sentTransfers.map((t) => ({
+        ...t,
+        type: "sent",
+      })),
+      ...transactions.receivedTransfers.map((t) => ({
+        ...t,
+        type: "received",
+      })),
+    ];
+
+    
+    formattedTransactions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    console.log(formattedTransactions);
+    return formattedTransactions;
+    
   } catch (error) {
     console.error("Error fetching transaction history:", error);
-    return { error: "Failed to fetch transactions" };
+    return { error: "Failed to fetch transactions." };
   }
 }

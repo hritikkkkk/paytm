@@ -1,11 +1,13 @@
-import SendCard from "@/components/SendCard";
-import TransactionHistory from "@/components/transaction";
+import SendCard from "@/components/SendCard"
+import { SlideOutPanel } from "@/components/transactionSlide"
 
-export default function () {
+export default function DashboardPage() {
   return (
-    <div className="w-full">
-      <SendCard />
-      <TransactionHistory />
+    <div className="container mx-auto p-4 relative min-h-screen">
+      <div className="max-w-md mx-auto">
+        <SendCard />
+      </div>
+      <SlideOutPanel />
     </div>
-  );
+  )
 }
