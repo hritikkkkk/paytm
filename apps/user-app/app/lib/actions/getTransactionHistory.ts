@@ -49,7 +49,7 @@ export async function getTransactionHistory() {
 
     
     formattedTransactions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    console.log(formattedTransactions);
+    
     return formattedTransactions;
     
   } catch (error) {
